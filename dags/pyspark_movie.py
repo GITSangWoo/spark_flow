@@ -28,9 +28,9 @@ def gen_emp(id,rule="all_success"):
 #           )
 #    return task
 
-def re_partition(ds_nodash):
+def repartition(ds_nodash):
     from spark_flow.transform import re_partition 
-    result = re_partition(ds_nodash)
+    result = re_partition(load_dt=ds_nodash)
     print(result)   
 
 def join_df():
@@ -56,8 +56,8 @@ with DAG(
 ) as dag:
 
     re_partition = PythonVirtualenvOperator(
-        task_id="re_partition",
-        python_callable = re_partition,
+        task_id="repartition",
+        python_callable = repartition,
         requirements=REQUIREMENTS,
         system_site_packages = False,
     )
