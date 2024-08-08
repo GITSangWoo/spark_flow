@@ -13,7 +13,7 @@ def re_partition(load_dt, from_path='/data/movie/extract'):
     df['load_dt'] = load_dt
     rm_dir(write_path)
     df.to_parquet(
-        write_base,partition_cols=['movieCd','multiMovieYn','repNationCd']
+        write_base,partition_cols=['load_dt','multiMovieYn','repNationCd']
         )
     return df.size, read_path, f'{write_path}'   
 
