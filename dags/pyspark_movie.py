@@ -26,8 +26,6 @@ def repartition(ds_nodash):
     result = re_partition(load_dt=ds_nodash)
     print(result)   
 
-def agg():
-    pass
 
 
 with DAG(
