@@ -50,7 +50,7 @@ with DAG(
     description='pyspark Dag',
     schedule="10 2 * * *",
     start_date=datetime(2015, 1, 1),
-    end_date=datetime(2016, 12, 31),
+    end_date=datetime(2016, 1, 4),
     catchup=True,
     tags=['pyspark', 'movie', 'data'],
 ) as dag:
