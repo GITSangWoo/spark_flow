@@ -30,6 +30,7 @@ def gen_emp(id,rule="all_success"):
 
 def repartition(ds_nodash):
     from spark_flow.transform import re_partition 
+    print(ds_nodash)
     result = re_partition(load_dt=ds_nodash)
     print(result)   
 
@@ -50,7 +51,7 @@ with DAG(
     description='pyspark Dag',
     schedule="10 2 * * *",
     start_date=datetime(2015, 1, 1),
-    end_date=datetime(2016, 1, 1),
+    end_date=datetime(2015, 1, 4),
     catchup=True,
     tags=['pyspark', 'movie', 'data'],
 ) as dag:
