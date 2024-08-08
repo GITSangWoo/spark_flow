@@ -28,9 +28,9 @@ def gen_emp(id,rule="all_success"):
 #           )
 #    return task
 
-def re_partition():
+def re_partition(ds_nodash):
     from spark_flow.transform import re_partition 
-    result = re_partition()
+    result = re_partition(ds_nodash)
     print(result)   
 
 def join_df():
@@ -49,8 +49,8 @@ with DAG(
     },
     description='pyspark Dag',
     schedule="10 2 * * *",
-    start_date=datetime(2023, 1, 1),
-    end_date=datetime(2023, 5, 1),
+    start_date=datetime(2015, 1, 1),
+    end_date=datetime(2016, 12, 31),
     catchup=True,
     tags=['pyspark', 'movie', 'data'],
 ) as dag:
