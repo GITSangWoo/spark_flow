@@ -66,21 +66,3 @@ with DAG(
 
     start >> get_data >> parsing_parquet >> select_parquet >> end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
