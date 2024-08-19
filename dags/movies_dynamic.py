@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 from textwrap import dedent
 from pprint import pprint
-
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.empty import EmptyOperator
@@ -10,57 +9,61 @@ from airflow.operators.python import (
     PythonOperator,
     PythonVirtualenvOperator,
     BranchPythonOperator,
-    is_venv_installed,
 )
 
-def gen_emp(id,rule="all_success"):
-    op = EmptyOperator(task_id = id, trigger_rule=rule)
-    return op
-
-def parsing():
-    pass
-
-def select():
-    pass
-
-REQUIREMENTS = ""
+REQUIREMENTS = "git+https://github.com/GITSangWoo/movdata.git@0.2/movielist"
 
 with DAG(
         'movie_dynamic',
     default_args={
         'depends_on_past': False,
-        'retries': 1,
+        'retries': 0,
         'retry_delay': timedelta(seconds=3)
     },
     description='movie Dyanmic Dag',
-    schedule="10 2 * * *",
+    schedule="@once",
     start_date=datetime(2015, 1, 1),
     end_date=datetime(2015, 1, 2),
     catchup=True,
     tags=['pyspark', 'movie', 'data'],
 ) as dag:
+    
+    def gen_emp(id,rule="all_success"):
+        op = EmptyOperator(task_id = id, trigger_rule=rule)
+        return op
 
+    def getdata(ds_nodash):
+        year=ds_nodash[0:4]
+        print(year)
+        from movdata.ml import save_movies
+        save_movies(year)
+
+    def parsing():
+        pass
+
+    def select():
+        pass
     start = gen_emp(id="start")
     end = gen_emp(id="end")
     
-    get_data = BashOperator(
+    get_data = PythonVirtualenvOperator(
         task_id = "get.data",
-        bash_command="""
-            echo "get data"
-        """
-    )
-    
-    parsing_parquet = PythonVirtualenvOperator(
-        task_id="parsing.parquet",
-        python_callable = parsing,
+        python_callable = getdata,
         requirements=REQUIREMENTS,
         system_site_packages = False,
+    )
+    
+    parsing_parquet = BashOperator(
+        task_id="parsing.parquet",
+        bash_command="""
+            YEAR={{ds_nodash[:4]}}
+            $SPARK_HOME/bin/spark-submit /home/centa/code/spark_flow/py/flat.py $YEAR
+        """
     )
     
     select_parquet = PythonVirtualenvOperator(
         task_id="select.parquet",
         python_callable = select,
-        requirements=REQUIREMENTS,
         system_site_packages = False,
     )
 
