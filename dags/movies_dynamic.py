@@ -38,11 +38,6 @@ with DAG(
         from movdata.ml import save_movies
         save_movies(year)
 
-    def parsing():
-        pass
-
-    def select():
-        pass
     start = gen_emp(id="start")
     end = gen_emp(id="end")
     
@@ -61,15 +56,13 @@ with DAG(
         """
     )
     
-    select_parquet = PythonVirtualenvOperator(
+    select_parquet = BashOperator(
         task_id="select.parquet",
-        python_callable = select,
-        system_site_packages = False,
+        bash_command="""
+            $SPARK_HOME/bin/spark-submit /home/centa/code/spark_flow/py/my_select.py 
+        """
     )
 
-    
-
-    
 
     start >> get_data >> parsing_parquet >> select_parquet >> end
 
