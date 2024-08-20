@@ -23,4 +23,6 @@ GROUP BY companys
 
 df3.show()
 
+df2.write.mode('append').parquet("/home/centa/data/movies/groupby/")
+
 spark.stop()
